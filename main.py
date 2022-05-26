@@ -21,17 +21,19 @@ bot = Bot(token = TOKEN)
 dp = Dispatcher(bot, storage = MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
 
-
+# Вызов кнопки help
 @dp.callback_query_handler(lambda call: call.data == 'button_help_in')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES['help'], reply_markup = kb.kb_who_in)
 
+# Вызов кнопки commands
 @dp.callback_query_handler(lambda call: call.data == 'button_commands_in')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES['commands'])
 
+# Вызов кнопки who
 @dp.callback_query_handler(lambda call: call.data == 'button_who_in')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
@@ -52,23 +54,15 @@ async def help_command(message: types.Message):
 async def commands_command(message: types.Message):
     await message.reply(MESSAGES['commands'])
 
-#Функция кто я (команда = who)
+# Функция кто я (команда = who)
 @dp.message_handler(commands = ["who"])
 async def who_command(message: types.Message):
     await message.answer(MESSAGES['who'], reply_markup = kb.kb_source_in)
 
-
+# Функция исходники бота (команда = source_bot)
 @dp.message_handler(commands = ["source_bot"])
 async def who_command(message: types.Message):
     await message.reply("Исходники моего бота:\nhttps://github.com/sp11dh4ck/main_bot_alpha")
-
-# Функция с принятием кнопок или сообщений
-@dp.message_handler(content_types = ["text"])
-async def text_user(message: types.Message):
-	if message.text == "Информация о боте📃":
-		await help_command(message)
-	elif message.text == "Команды бота💠":
-		await commands_command(message)
 
 
 if __name__ == '__main__':
