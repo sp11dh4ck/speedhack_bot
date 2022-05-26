@@ -18,4 +18,3 @@ kb_who_in = InlineKeyboardMarkup().add(button_who_in)
 button_source_in = InlineKeyboardButton("Source Bot📀", url = "https://github.com/sp11dh4ck/main_bot_alpha")
 
 kb_source_in = InlineKeyboardMarkup().add(button_source_in)
-#kb_source_in.add(InlineKeyboardButton("Source Bot📀", url = "")) # = InlineKeyboardMarkup().add(button_source_in)
