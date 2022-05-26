@@ -1,4 +1,4 @@
-<h1 align="center">Основная информация по проекту<a href="https://daniilshat.ru/" target="_blank">SP Moder Bot</a> 
+<h1 align="center">Основная информация по проекту <a href="https://daniilshat.ru/" target="_blank">SP Moder Bot</a> 
 <img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="32"/></h1>
 <h3 align="center">Это небольшое руководство по моему проекту ;)</h3>
 
