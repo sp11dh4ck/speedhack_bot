@@ -37,29 +37,6 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES['who'], reply_markup = kb.kb_source_in)
 
-#@dp.callback_query_handler(lambda call: call.data == 'button_source_in')
-#async def process_callback_button1(callback_query: types.CallbackQuery):
-#    await bot.answer_callback_query(callback_query.id)
-#    await bot.send_message(callback_query.from_user.id, reply_markup = kb.kb_source_in)
-
-"""
-@dp.callback_query_handler(lambda c: c.data and c.data.startswith('btn'))
-async def process_callback_kb1btn1(callback_query: types.CallbackQuery):
-    code = callback_query.data[-1]
-    if code.isdigit():
-        code = int(code)
-    if code == 2:
-        await bot.answer_callback_query(callback_query.id, text='Нажата вторая кнопка')
-    elif code == 5:
-        await bot.answer_callback_query(
-            callback_query.id,
-            text = 'Нажата кнопка с номером 5.\nА этот текст может быть длиной до 200 символов 😉',
-            show_alert = True)
-    else:
-        await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, f'Нажата инлайн кнопка! code = {code}')
-"""
-
 # Стартовая функция (команда = start)
 @dp.message_handler(commands = ["start"])
 async def start_command(message: types.Message):
