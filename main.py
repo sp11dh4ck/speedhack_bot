@@ -1,3 +1,8 @@
+# ------------------------------------------------------------------- #
+# Перед работой с ботом прочитайте файл REWADME в репозитории с ботом #
+#             Там рассписанно какие файлы за что отвечают             #
+# ------------------------------------------------------------------- #
+
 # Импортируем библиотеки
 import requests
 import platform
@@ -18,17 +23,19 @@ bot = Bot(token = TOKEN)
 dp = Dispatcher(bot, storage = MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
 
-# --- Call вызовы кнопок --- #
+# --- Call вызовы кнопок --- 
 @dp.callback_query_handler(lambda call: call.data == 'button_help_in')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES['help'], reply_markup = kb.kb_who_in)
 
+# Вызов кнопки commands
 @dp.callback_query_handler(lambda call: call.data == 'button_commands_in')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES['commands'])
 
+# Вызов кнопки who
 @dp.callback_query_handler(lambda call: call.data == 'button_who_in')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
@@ -39,10 +46,10 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES['menu'], reply_markup = kb.kb_menu_in)
 
-#@dp.callback_query_handler(lambda call: call.data == 'button_ip_addr_in')
-#async def process_callback_button1(callback_query: types.CallbackQuery):
-#    await bot.answer_callback_query(callback_query.id)
-#    await bot.send_message(callback_query.from_user.id)
+@dp.callback_query_handler(lambda call: call.data == 'button_ip_addr_in')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id)
 
 @dp.callback_query_handler(lambda call: call.data == 'button_pc_spec_in')
 async def process_callback_button1(callback_query: types.CallbackQuery):
