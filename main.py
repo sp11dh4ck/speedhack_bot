@@ -31,28 +31,28 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
 
 # Вызов кнопки commands
 @dp.callback_query_handler(lambda call: call.data == 'button_commands_in')
-async def process_callback_button1(callback_query: types.CallbackQuery):
+async def process_callback_button2(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES['commands'])
 
 # Вызов кнопки who
 @dp.callback_query_handler(lambda call: call.data == 'button_who_in')
-async def process_callback_button1(callback_query: types.CallbackQuery):
+async def process_callback_button3(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES['who'], reply_markup = kb.kb_source_in)
 
 @dp.callback_query_handler(lambda call: call.data == 'button_menu_in')
-async def process_callback_button1(callback_query: types.CallbackQuery):
+async def process_callback_button4(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES['menu'], reply_markup = kb.kb_menu_in)
 
 @dp.callback_query_handler(lambda call: call.data == 'button_ip_addr_in')
-async def process_callback_button1(callback_query: types.CallbackQuery):
+async def process_callback_button5(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id)
 
 @dp.callback_query_handler(lambda call: call.data == 'button_pc_spec_in')
-async def process_callback_button1(callback_query: types.CallbackQuery):
+async def process_callback_button6(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id)
 # -------------------------- #
