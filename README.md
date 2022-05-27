@@ -1,4 +1,4 @@
-<h1 align="center">Основная информация по проекту <a href="https://t.me/sp1edh4ck" target="_blank">SP Moder Bot</a> 
+<h1 align="center">Основная информация по проекту <a href="https://t.me/speedhack_bot" target="_blank">SP Moder Bot</a> 
 
 
 # 1
