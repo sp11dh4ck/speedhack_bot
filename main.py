@@ -11,7 +11,7 @@ import logging
 
 import markups as kb
 
-from config import TOKEN
+#from config import TOKEN
 from messages import MESSAGES
 
 from aiogram import Bot, types
@@ -19,6 +19,8 @@ from aiogram.utils.executor import start_webhook
 from aiogram.dispatcher import Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
+
+TOKEN = os.getenv("2040997542:AAF0SrSRch3tyxRsnklpX5xUc1ltSXCnFwY")
 
 # Определяем главные переменные для работы с ботом
 bot = Bot(token = TOKEN)
