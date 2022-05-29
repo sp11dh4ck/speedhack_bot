@@ -30,7 +30,7 @@ WEBHOOK_HOST = f'https://{speedhackbot}.herokuapp.com'
 WEBHOOK_PATH = f'/webhook/{TOKEN}'
 WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
 WEBAPP_HOST = '0.0.0.0'
-WEBAPP_PORT = os.getenv('PORT', default = 8000)
+WEBAPP_PORT = os.getenv('PORT', default = 5000)
 
 async def on_startup(dispatcher):
     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates = True)
