@@ -11,11 +11,11 @@ import logging
 
 import markups as kb
 
-from config import TOKEN
+from config import TOKEN, SP_ID
 from messages import MESSAGES
 
 from aiogram import Bot, types
-from aiogram.utils.executor import start_webhook
+from aiogram.utils import executor
 from aiogram.dispatcher import Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
@@ -24,19 +24,6 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 bot = Bot(token = TOKEN)
 dp = Dispatcher(bot, storage = MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
-
-HEROKU_APP_NAME = os.getenv("speedhackbot")
-WEBHOOK_HOST = f'https://{HEROKU_APP_NAME}.herokuapp.com'
-WEBHOOK_PATH = f'/webhook/{TOKEN}'
-WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
-WEBAPP_HOST = '0.0.0.0'
-WEBAPP_PORT = os.getenv('PORT', default = 8000)
-
-async def on_startup(dispatcher):
-    await bot.set_webhook(WEBHOOK_URL, drop_pending_updates = True)
-
-async def on_shutdown(dispatcher):
-    await bot.delete_webhook()
 
 # --- Call вызовы кнопок --- 
 @dp.callback_query_handler(lambda call: call.data == 'button_help_in')
@@ -108,30 +95,19 @@ async def spec(message: types.Message):
 	banner = f"Название PC: {platform.node()}\nСистема: {platform.system()} {platform.release()}"
 	await message.answer(f"{banner}")
 
+# Функция отключения пк (только для создателя)
+@dp.message_handler(commands = ["off_pc"])
+async def pc_offer(message: types.Message):
+    if message.from_user.id == SP_ID:
+        os.system("shutdown -s -t 0")
+    else:
+        await message.reply("У вас нет прав на выполнение данной команды!")
+
 # Функция с принятием кнопок или сообщений
 @dp.message_handler()
 async def text_user(message: types.Message):
 	await message.reply("Я тебя не понимаю :(\n\nПопробуй написать команду /commands или /help")
 
-"""
-@bot.message_handler(commands = ["screen"])
-def screen(message):
-	filename = f"{time.time()}.jpg"
-	pag.screenshot(filename)
-
-	with open(filename, "rb") as image:
-		bot.send_document(message.chat.id, image)
-	os.remove(filename)
-"""
 
 if __name__ == '__main__':
-    logging.basicConfig(level = logging.INFO)
-    start_webhook(
-        dispatcher = dp,
-        webhook_path = WEBHOOK_PATH,
-        skip_updates = True,
-        on_startup = on_startup,
-        on_shutdown = on_shutdown,
-        host = WEBAPP_HOST,
-        port = WEBAPP_PORT,
-   )
+	executor.start_polling(dp, skip_updates = True)
