@@ -26,13 +26,11 @@ help_message = text(
 bot_commands = text(
     "Команды бота:",
     "/start - Запуск",
-    "/commands - Команды",
     "/help - Инфа о боте",
-    "/who - Инфа обо мне",
     "/menu - Меню бота",
+    "/commands - Команды",
+    "/who - Инфа обо мне",
     "/source_bot - Исходники бота",
-    "/ip - Ваш IP адрес",
-    "/spec - Характеристики PC",
     sep = "\n"
 )
 
@@ -54,4 +52,13 @@ MESSAGES = {
     'help': help_message,
     'commands': bot_commands,
     'who': who_command
+}
+
+help_message_en = text(
+    "Hello"
+)
+
+
+MESSAGES_EN = {
+    'help_en': help_message_en
 }
