@@ -1,2 +1,2 @@
-TOKEN = "2040997542:AAF0SrSRch3tyxRsnklpX5xUc1ltSXCnFwY"
-SP_ID = 1012123920
+TOKEN = "Your:TOKEN" # with ""
+SP_ID = Your:ID # without ""

@@ -49,7 +49,7 @@ async def process_callback_button4(callback_query: types.CallbackQuery):
 async def process_callback_button5(callback_query: types.CallbackQuery):
     response = requests.get("http://jsonip.com/").json()
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Ваш IP адресс: " f"{response['ip']}")
+    await bot.send_message(callback_query.from_user.id, "Ваш IP адрес: " f"{response['ip']}")
 
 @dp.callback_query_handler(lambda call: call.data == 'button_pc_spec_in')
 async def process_callback_button6(callback_query: types.CallbackQuery):
@@ -80,24 +80,29 @@ async def who_command(message: types.Message):
 
 # Выдача ссылки на исходники бота (команда = /source_bot)
 @dp.message_handler(commands = ["source_bot"])
-async def who_command(message: types.Message):
+async def source_command(message: types.Message):
     await message.reply("Исходники моего бота:\nhttps://github.com/sp11dh4ck/main_bot_alpha")
 
 # Функция ip адресс (команда = ip)
 @dp.message_handler(commands = ["ip"])
-async def ip_addr(message: types.Message):
+async def ip_addr_command(message: types.Message):
 	response = requests.get("http://jsonip.com/").json()
-	await message.answer("Ваш IP адресс: " f"{response['ip']}")
+	await message.answer("Ваш IP адрес: " f"{response['ip']}")
 
 # Функция спецификация пк (команда = spec)
 @dp.message_handler(commands = ["spec"])
-async def spec(message: types.Message):
+async def spec_command(message: types.Message):
 	banner = f"Название PC: {platform.node()}\nСистема: {platform.system()} {platform.release()}"
 	await message.answer(f"{banner}")
 
+# Запуск меню бота (команда = menu)
+@dp.message_handler(commands = ["menu"])
+async def menu_command(message: types.Message):
+    await message.answer(MESSAGES['menu'], reply_markup = kb.kb_menu_in)
+
 # Функция отключения пк (только для создателя)
 @dp.message_handler(commands = ["off_pc"])
-async def pc_offer(message: types.Message):
+async def pc_off_command(message: types.Message):
     if message.from_user.id == SP_ID:
         os.system("shutdown -s -t 0")
     else:
