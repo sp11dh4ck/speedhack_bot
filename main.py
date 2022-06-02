@@ -7,7 +7,6 @@
 import requests
 import platform
 import os
-import logging
 
 import markups as kb
 
