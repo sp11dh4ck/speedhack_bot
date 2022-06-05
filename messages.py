@@ -1,5 +1,6 @@
 from aiogram.utils.markdown import text
 
+
 # ! - Русский язык - ! #
 start_ru = text(
     "Приветствую!",

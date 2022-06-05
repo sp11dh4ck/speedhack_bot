@@ -1,7 +1,7 @@
-# ------------------------------------------------------------------- #
-# Перед работой с ботом прочитайте файл REWADME в репозитории с ботом #
-#             Там рассписанно какие файлы за что отвечают             #
-# ------------------------------------------------------------------- #
+# -------------------------------------------------------------------- #
+#  Перед работой с ботом прочитайте файл README в репозитории с ботом  #
+#             Там рассписанно какие файлы за что отвечают              #
+# -------------------------------------------------------------------- #
 
 # Импортируем библиотеки
 import requests
@@ -81,22 +81,22 @@ async def button_shift_lang_ru(callback_query: types.CallbackQuery):
 async def start_command(message: types.Message):
 	await message.answer("Выбери язык\n\nChoose language", reply_markup = kb.kb_lang)
 
-# Функция помощи (команда = /help)
+# Функция помощи (команда = /help_ru)
 @dp.message_handler(commands = ["help_ru"])
 async def help_command(message: types.Message):
     await message.answer(MESSAGES_RU['help_ru'], reply_markup = kb.kb_who_ru)
 
-# Функция кто я (команда = who)
+# Функция кто я (команда = who_ru)
 @dp.message_handler(commands = ["who_ru"])
 async def who_command(message: types.Message):
     await message.answer(MESSAGES_RU['who_ru'], reply_markup = kb.kb_source_ru)
 
-# Выдача ссылки на исходники бота (команда = /source_bot)
+# Выдача ссылки на исходники бота (команда = /source_bot_ru)
 @dp.message_handler(commands = ["source_bot_ru"])
 async def source_command(message: types.Message):
-    await message.reply("Исходники моего бота:\nhttps://github.com/sp11dh4ck/main_bot_alpha")
+    await message.reply("Исходники моего бота:\nhttps://github.com/sp11dh4ck/speedhack_bot", disable_web_page_preview = True)
 
-# Запуск меню бота (команда = menu)
+# Запуск меню бота (команда = menu_ru)
 @dp.message_handler(commands = ["menu_ru"])
 async def menu_command(message: types.Message):
     await message.answer(MESSAGES_RU['menu_ru'], reply_markup = kb.kb_menu_ru)
@@ -170,22 +170,22 @@ async def button_shift_lang_ru(callback_query: types.CallbackQuery):
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
 # * ------------------------------------------------------------------- * #
 
-# Функция помощи (команда = /help)
+# Функция помощи (команда = /help_en)
 @dp.message_handler(commands = ["help_en"])
 async def help_command(message: types.Message):
     await message.answer(MESSAGES_RU['help_en'], reply_markup = kb.kb_who_en)
 
-# Функция кто я (команда = who)
+# Функция кто я (команда = who_en)
 @dp.message_handler(commands = ["who_en"])
 async def who_command(message: types.Message):
     await message.answer(MESSAGES_RU['who'], reply_markup = kb.kb_source_en)
 
-# Выдача ссылки на исходники бота (команда = /source_bot)
+# Выдача ссылки на исходники бота (команда = /source_bot_en)
 @dp.message_handler(commands = ["source_bot_en"])
 async def source_command(message: types.Message):
-    await message.reply("Исходники моего бота:\nhttps://github.com/sp11dh4ck/main_bot_alpha")
+    await message.reply("Исходники моего бота:\nhttps://github.com/sp11dh4ck/speedhack_bot", disable_web_page_preview = True)
 
-# Запуск меню бота (команда = menu)
+# Запуск меню бота (команда = menu_en)
 @dp.message_handler(commands = ["menu_en"])
 async def menu_command(message: types.Message):
     await message.answer(MESSAGES_RU['menu_en'], reply_markup = kb.kb_menu_en)
