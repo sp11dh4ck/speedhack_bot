@@ -10,9 +10,12 @@ import os
 
 import markups as kb
 
-from config import TOKEN, SP_ID
+from random import randint
+from db import DataBase
+from config import TOKEN, SP_ID, DONATE_TOKEN
 from messages import MESSAGES_EN, MESSAGES_RU
 
+from pyqiwip2p import QiwiP2P
 from aiogram import Bot, types
 from aiogram.utils import executor
 from aiogram.dispatcher import Dispatcher
@@ -23,6 +26,17 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 bot = Bot(token = TOKEN)
 dp = Dispatcher(bot, storage = MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
+db = DataBase("users.db")
+p2p = QiwiP2P(auth_key = DONATE_TOKEN)
+
+# ? ----- Общие функции ----- ? #
+def is_number(_str):
+    try:
+        int(_str)
+        return True
+    except:
+        return False
+# * ------------------------------------------------------------------- * #
 
 
 # ? ----- Блок с русским ботом ----- ? #
@@ -32,6 +46,7 @@ response = requests.get("http://jsonip.com/").json()
 # !- Specification -! #
 banner_ru = f"Название PC: {platform.node()}\nСистема: {platform.system()} {platform.release()}"
 # * ------------------------------------------------------------------- * #
+
 
 # ! - Call вызовы РУССКИХ кнопок - ! #
 @dp.callback_query_handler(lambda call: call.data == "button_ru")
@@ -69,17 +84,25 @@ async def button_pc_spec_ru(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, f"{banner_ru}")
 
+@dp.callback_query_handler(lambda call: call.data == 'button_donate_ru')
+async def button_shift_lang_ru(callback_query: types.CallbackQuery):
+    await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, MESSAGES_RU['donate_ru'])
+
 @dp.callback_query_handler(lambda call: call.data == 'button_shift_lang_ru')
 async def button_shift_lang_ru(callback_query: types.CallbackQuery):
+    await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES_EN['menu_en'], reply_markup = kb.kb_menu_en)
-    await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
 # * ------------------------------------------------------------------- * #
 
 # ! - Блок функций - ! #
 @dp.message_handler(commands = ["start"])
 async def start_command(message: types.Message):
-	await message.answer("Выбери язык\n\nChoose language", reply_markup = kb.kb_lang)
+    await message.answer("Выбери язык\n\nChoose language", reply_markup = kb.kb_lang)
+    if not db.user_exists(message.from_user.id):
+        db.add_user(message.from_user.id)
 
 # Функция помощи (команда = /help_ru)
 @dp.message_handler(commands = ["help_ru"])
@@ -108,20 +131,68 @@ async def pc_off_command(message: types.Message):
         os.system("shutdown -s -t 0")
     else:
         await message.reply("У вас нет прав на выполнение данной команды!\n"
-        "Лучше введите /commands и узнайте, какие команды вы можете использовать ;)\n\n"
+        "Лучше введите / и узнайте, какие команды вы можете использовать ;)\n\n"
         "You do not have the rights to execute this command!\n"
         "Better type / and see what commands you can use ;)")
 
-# Функция с принятием сообщений
+# Функция отправки рассылки пользователям
+@dp.message_handler(commands = ["ntf"])
+async def start(message: types.Message):
+	if message.from_user.id == SP_ID:
+		text = message.text[5:]
+		users = db.get_users()
+		for row in users:
+			try:
+				await bot.send_message(row[0], text)
+				if int(row[1]) != 1:
+					db.set_active(row[0], 1)
+			except:
+				db.set_active(row[0], 0)
+		await message.answer("Успешно!")
+
 @dp.message_handler()
 async def text_user(message: types.Message):
-	await message.reply("Я тебя не понимаю :(\n"
-    "Попробуй написать /commands или /help\n\n"
-    "I don't understand you :(\n"
-    "Try writing /commands or /help")
+    if message.chat.type == "private":
+        if is_number(message.text):
+            message_money = int(message.text)
+            if message_money >= 1:
+                comment = str(message.from_user.id) + ":" + str(randint(1000, 9999))
+                bill = p2p.bill(amount = message_money, lifetime = 15, comment = comment)
+                db.add_check(message.from_user.id, message_money, bill.bill_id)
+
+                await bot.send_message(message.from_user.id, f"Сумма: {message_money} руб.\n",
+                    reply_markup = kb.donate_menu(url = bill.pay_url, bill = bill.bill_id)
+                )
+            else:
+                await bot.send_message(message.from_user.id, "Минимальная сумма 1 руб.")
+        else:
+            await bot.send_message(message.from_user.id, "Введите целое число равное или большее 1")
+
+@dp.callback_query_handler(text_contains = "check_")
+async def check(callback_query: types.CallbackQuery):
+    bill = str(callback_query.data[6:])
+    info = db.get_check(bill)
+    if info != False:
+        if str(p2p.check(bill_id = bill).status) == "PAID":
+            user_money = db.user_money(callback_query.from_user.id)
+            money = int(info[2])
+            db.set_money(callback_query.from_user.id, user_money + money)
+            await bot.send_message(callback_query.from_user.id, "Спасибо за донат :)", db.delete_check())
+        else:
+            await bot.send_message(callback_query.from_user.id, "Вы не оплатили счёт :(", reply_markup = kb.donate_menu(False, bill = bill))
+    else:
+        await bot.send_message(callback_query.from_user.id, "Счёт не найден :(")
+
+# Функция с принятием сообщений
+#@dp.message_handler()
+#async def text_user(message: types.Message):
+#	await message.reply("Я тебя не понимаю :(\n"
+#    "Попробуй написать /commands или /help\n\n"
+#    "I don't understand you :(\n"
+#    "Try writing /commands or /help")
 # * ------------------------------------------------------------------- * #
 
-
+#eyJ2ZXJzaW9uIjoiUDJQIiwiZGF0YSI6eyJwYXlpbl9tZXJjaGFudF9zaXRlX3VpZCI6InA1anMweC0wMCIsInVzZXJfaWQiOiI3OTE1MTAwNzc0NSIsInNlY3JldCI6ImI2M2QzMjM2OGJhOWFjMzkzZTU0OTY2ZGFlYTRkYjU5ZjU0NDI3ZGVhYjZmMzMyMjVjMDVkNWExZTM2OTQ2MTgifX0=
 # ? ----- Блок с английским ботом ----- ? #
 # !- Specification -! #
 banner_en = f"Name PC: {platform.node()}\nSystem: {platform.system()} {platform.release()}"
@@ -165,9 +236,9 @@ async def button_pc_spec_ru(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda call: call.data == 'button_shift_lang_en')
 async def button_shift_lang_ru(callback_query: types.CallbackQuery):
+    await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, MESSAGES_RU['menu_ru'], reply_markup = kb.kb_menu_ru)
-    await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
 # * ------------------------------------------------------------------- * #
 
 # Функция помощи (команда = /help_en)

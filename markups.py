@@ -15,6 +15,8 @@ button_menu_en = InlineKeyboardButton("Menu🌍", callback_data = 'button_menu_e
 button_pc_info_ru = InlineKeyboardButton("Информация о PC💻", callback_data = "button_pc_info_ru")
 button_pc_info_en = InlineKeyboardButton("PC info💻", callback_data = "button_pc_info_en")
 
+# --- Кнопка доната --- #
+button_donate_ru = InlineKeyboardButton("Донат💵", callback_data = "button_donate_ru")
 
 # ! - Русские кнопки - ! #
 # --- Стартовая команда + меню --- #
@@ -31,13 +33,22 @@ kb_source_ru = InlineKeyboardMarkup().add(button_source_ru).add(button_menu_ru)
 
 # --- Главное меню --- #
 button_shift_lang_ru = InlineKeyboardButton("Language change💾", callback_data = "button_shift_lang_ru")
-kb_menu_ru = InlineKeyboardMarkup().add(button_pc_info_ru).add(button_shift_lang_ru)
+kb_menu_ru = InlineKeyboardMarkup().add(button_pc_info_ru).add(button_shift_lang_ru).add(button_donate_ru)
 
 # --- Меню инфы о пк + меню --- #
 button_ip_addr_ru = InlineKeyboardButton("IP Адрес🌐", callback_data = 'button_ip_addr_ru')
 button_pc_spec_ru = InlineKeyboardButton("Тех. Характеристики PC⚙️", callback_data = 'button_pc_spec_ru')
 kb_menu_pc_ru = InlineKeyboardMarkup().add(button_ip_addr_ru, button_pc_spec_ru).add(button_menu_ru)
 
+def donate_menu(isUrl = True, url = "", bill = ""):
+    donate_check = InlineKeyboardMarkup(row_width = 1)
+    if isUrl:
+        button_url_qiwi_ru = InlineKeyboardButton(text = "Оплатить", url = url)
+        donate_check.insert(button_url_qiwi_ru)
+    
+    button_check_qiwi_ru = InlineKeyboardButton(text = "Проверить оплату", callback_data = "check_" + bill)
+    donate_check.insert(button_check_qiwi_ru)
+    return donate_check
 
 # ! - Английские кнопки - ! #
 # --- Стартовая команда + меню --- #

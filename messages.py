@@ -40,13 +40,18 @@ main_pc_ru = text(
     sep = "\n\n"
 )
 
+donate_ru = text(
+    "Для того, чтобы поддержать автора, введите желаемую сумму равную или большую 1 руб."
+)
+
 
 MESSAGES_RU = {
     'start_ru': start_ru,
     'menu_ru': menu_ru,
     'help_ru': help_ru,
     'who_ru': who_ru,
-    'main_pc_ru': main_pc_ru
+    'main_pc_ru': main_pc_ru,
+    'donate_ru': donate_ru
 }
 
 # ! - Английский язык - ! #
