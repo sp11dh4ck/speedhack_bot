@@ -10,12 +10,10 @@ import os
 
 import markups as kb
 
-from random import randint
 from db import DataBase
 from config import TOKEN, SP_ID, DONATE_TOKEN
 from messages import MESSAGES_EN, MESSAGES_RU
 
-from pyqiwip2p import QiwiP2P
 from aiogram import Bot, types
 from aiogram.utils import executor
 from aiogram.dispatcher import Dispatcher
@@ -27,16 +25,6 @@ bot = Bot(token = TOKEN)
 dp = Dispatcher(bot, storage = MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
 db = DataBase("users.db")
-p2p = QiwiP2P(auth_key = DONATE_TOKEN)
-
-# ? ----- Общие функции ----- ? #
-def is_number(_str):
-    try:
-        int(_str)
-        return True
-    except:
-        return False
-# * ------------------------------------------------------------------- * #
 
 
 # ? ----- Блок с русским ботом ----- ? #
@@ -150,49 +138,16 @@ async def start(message: types.Message):
 				db.set_active(row[0], 0)
 		await message.answer("Успешно!")
 
+# Функция с принятием сообщений
 @dp.message_handler()
 async def text_user(message: types.Message):
-    if message.chat.type == "private":
-        if is_number(message.text):
-            message_money = int(message.text)
-            if message_money >= 1:
-                comment = str(message.from_user.id) + ":" + str(randint(1000, 9999))
-                bill = p2p.bill(amount = message_money, lifetime = 15, comment = comment)
-                db.add_check(message.from_user.id, message_money, bill.bill_id)
-
-                await bot.send_message(message.from_user.id, f"Сумма: {message_money} руб.\n",
-                    reply_markup = kb.donate_menu(url = bill.pay_url, bill = bill.bill_id)
-                )
-            else:
-                await bot.send_message(message.from_user.id, "Минимальная сумма 1 руб.")
-        else:
-            await bot.send_message(message.from_user.id, "Введите целое число равное или большее 1")
-
-@dp.callback_query_handler(text_contains = "check_")
-async def check(callback_query: types.CallbackQuery):
-    bill = str(callback_query.data[6:])
-    info = db.get_check(bill)
-    if info != False:
-        if str(p2p.check(bill_id = bill).status) == "PAID":
-            user_money = db.user_money(callback_query.from_user.id)
-            money = int(info[2])
-            db.set_money(callback_query.from_user.id, user_money + money)
-            await bot.send_message(callback_query.from_user.id, "Спасибо за донат :)", db.delete_check())
-        else:
-            await bot.send_message(callback_query.from_user.id, "Вы не оплатили счёт :(", reply_markup = kb.donate_menu(False, bill = bill))
-    else:
-        await bot.send_message(callback_query.from_user.id, "Счёт не найден :(")
-
-# Функция с принятием сообщений
-#@dp.message_handler()
-#async def text_user(message: types.Message):
-#	await message.reply("Я тебя не понимаю :(\n"
-#    "Попробуй написать /commands или /help\n\n"
-#    "I don't understand you :(\n"
-#    "Try writing /commands or /help")
+	await message.reply("Я тебя не понимаю :(\n"
+    "Попробуй написать /commands или /help\n\n"
+    "I don't understand you :(\n"
+    "Try writing /commands or /help")
 # * ------------------------------------------------------------------- * #
 
-#eyJ2ZXJzaW9uIjoiUDJQIiwiZGF0YSI6eyJwYXlpbl9tZXJjaGFudF9zaXRlX3VpZCI6InA1anMweC0wMCIsInVzZXJfaWQiOiI3OTE1MTAwNzc0NSIsInNlY3JldCI6ImI2M2QzMjM2OGJhOWFjMzkzZTU0OTY2ZGFlYTRkYjU5ZjU0NDI3ZGVhYjZmMzMyMjVjMDVkNWExZTM2OTQ2MTgifX0=
+
 # ? ----- Блок с английским ботом ----- ? #
 # !- Specification -! #
 banner_en = f"Name PC: {platform.node()}\nSystem: {platform.system()} {platform.release()}"
